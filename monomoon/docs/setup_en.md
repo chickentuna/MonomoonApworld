@@ -1,0 +1,3 @@
+# MONOMOON Randomizer Setup
+
+WIP
