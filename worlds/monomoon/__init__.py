@@ -44,4 +44,7 @@ class MonomoonWorld(World):
         return MonomoonItem(name, classification(name), item_name_to_id[name], self.player)
 
     def set_rules(self) -> None:
-        self.multiworld.completion_condition[self.player] = lambda state: True
+        #TODO: use the RuleBuilder?
+        
+        # TODO: completion condition
+        self.multiworld.completion_condition[self.player] = lambda state: False
