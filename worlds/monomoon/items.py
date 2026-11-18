@@ -3,7 +3,12 @@ from typing import Dict
 from BaseClasses import Item, ItemClassification
 from .constants import GAME_NAME, BASE_COLLECTIBLES
 
-item_name_to_id: Dict[str, int] = BASE_COLLECTIBLES
+item_name_to_id: Dict[str, int] = {}
+for raw in BASE_COLLECTIBLES:
+    item_name_to_id[raw.node_name] = raw.ap_id
+item_name_to_id['Relic'] = 5000
+item_name_to_id['Moon Piece'] = 6000
+item_name_to_id['Sky Emblem'] = 7002
 
 class MonomoonItem(Item):
     game = GAME_NAME
@@ -21,5 +26,11 @@ def classification(name: str) -> ItemClassification:
     ]
     
     if name in PROGRESSIVE_COLLECTIBLES or 'CollectableOrb' in name:
+        return ItemClassification.progression
+    if 'Relic' in name:
+        return ItemClassification.progression
+    if 'Emblem' in name:
+        return ItemClassification.progression
+    if name == 'Moon Piece':
         return ItemClassification.progression
     return ItemClassification.useful

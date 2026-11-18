@@ -1,7 +1,7 @@
 from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
-from .constants import GAME_NAME
+from .constants import GAME_NAME, MOON_PIECE_COUNT, RELIC_COUNT
 from .items import MonomoonItem, item_name_to_id, classification
 from .locations import MonomoonLocation, location_name_to_id, location
 from .options import MonomoonOptions, GateMovementMechanics
@@ -38,23 +38,37 @@ class MonomoonWorld(World):
     options: MonomoonOptions
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
+    origin_region_name = 'Entrance'
 
 
     def create_regions(self) -> None:
         entrance = Region("Entrance", self.player, self.multiworld)
+        self.multiworld.regions.append(entrance)
         entrance.locations.append(MonomoonLocation(self.player, *location("CollectableMap"), entrance))
-
+        
         west_of_entrace = Region("WestOfEntrance", self.player, self.multiworld)
+        self.multiworld.regions.append(west_of_entrace)
         self.create_entrance(entrance, west_of_entrace, movement("Float", "Slide"))
 
         everything = Region("TODO", self.player, self.multiworld)
         for name, loc_id in location_name_to_id.items():
+            if name == 'CollectableMap':
+                # used in test above so can't go in todo bin
+                continue
             everything.locations.append(MonomoonLocation(self.player, name, loc_id, everything))
         self.multiworld.regions.append(everything)
+
+        entrance.connect(everything)
 
     def create_items(self) -> None:
         for name in item_name_to_id:
             self.multiworld.itempool.append(self.create_item(name))
+        for _ in range(MOON_PIECE_COUNT):
+            self.multiworld.itempool.append(self.create_item('Moon Piece'))
+        for _ in range(RELIC_COUNT):
+            self.multiworld.itempool.append(self.create_item('Relic'))
+        self.multiworld.itempool.append(self.create_item('Sky Emblem'))
+        
 
     def create_item(self, name: str) -> Item:
         return MonomoonItem(name, classification(name), item_name_to_id[name], self.player)
@@ -73,12 +87,8 @@ class MonomoonWorld(World):
         statue_region = self.get_region("TODO")
         # NOTE: temporary names for testing out logic
         self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
-        self.add_event(shrine_region, "The End", Has("Moon Fixed") & Has("Sky Key"))
-        self.add_event(statue_region, "Full Moon", Has("True Ending") & Has("Trophy", 8))
+        self.add_event(shrine_region, "The End", Has("Fix Moon") & Has("Sky Emblem"))
+        self.add_event(statue_region, "Full Moon", Has("The End") & Has("Relic", 8))
 
         goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
         self.set_completion_rule(Has(goal_event))
-
-        
-        # TODO: completion condition
-        self.multiworld.completion_condition[self.player] = lambda state: False

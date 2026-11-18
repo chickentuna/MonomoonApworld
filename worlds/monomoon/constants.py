@@ -79,3 +79,7 @@ BASE_COLLECTIBLES: List[RawCollectible] = [
     RawCollectible('CollectableGoldenQuill5', 4004)
 ]
 # TODO: include relics, gems, moon pieces.
+
+
+MOON_PIECE_COUNT = 4
+RELIC_COUNT = 8
