@@ -45,7 +45,7 @@ class MonomoonWorld(World):
         entrance = Region("Entrance", self.player, self.multiworld)
         self.multiworld.regions.append(entrance)
         entrance.locations.append(MonomoonLocation(self.player, *location("CollectableMap"), entrance))
-        
+
         west_of_entrace = Region("WestOfEntrance", self.player, self.multiworld)
         self.multiworld.regions.append(west_of_entrace)
         self.create_entrance(entrance, west_of_entrace, movement("Float", "Slide"))
@@ -68,7 +68,7 @@ class MonomoonWorld(World):
         for _ in range(RELIC_COUNT):
             self.multiworld.itempool.append(self.create_item('Relic'))
         self.multiworld.itempool.append(self.create_item('Sky Emblem'))
-        
+
 
     def create_item(self, name: str) -> Item:
         return MonomoonItem(name, classification(name), item_name_to_id[name], self.player)
@@ -88,7 +88,41 @@ class MonomoonWorld(World):
         # NOTE: temporary names for testing out logic
         self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
         self.add_event(shrine_region, "The End", Has("Fix Moon") & Has("Sky Emblem"))
-        self.add_event(statue_region, "Full Moon", Has("The End") & Has("Relic", 8))
+        self.add_event(statue_region, "Full Moon", Has("The End") 
+                       & Has("Relic", 8) 
+                       #    & Has("Yellow Orb", 7)
+                       #    & Has("Green Orb", 7)
+                       #    & Has("Red Orb", 7)
+                       #    & Has("Blue Orb", 7)
+                       & Has('CollectableOrb')
+                       & Has('CollectableOrb2')
+                       & Has('CollectableOrb3')
+                       & Has('CollectableOrb4')
+                       & Has('CollectableOrb5')
+                       & Has('CollectableOrb6')
+                       & Has('CollectableOrb7')
+                       & Has('CollectableOrb8')
+                       & Has('CollectableOrb9')
+                       & Has('CollectableOrb10')
+                       & Has('CollectableOrb11')
+                       & Has('CollectableOrb12')
+                       & Has('CollectableOrb13')
+                       & Has('CollectableOrb14')
+                       & Has('CollectableOrb15')
+                       & Has('CollectableOrb16')
+                       & Has('CollectableOrb17')
+                       & Has('CollectableOrb18')
+                       & Has('CollectableOrb19')
+                       & Has('CollectableOrb20')
+                       & Has('CollectableOrb21')
+                       & Has('CollectableOrb22')
+                       & Has('CollectableOrb23')
+                       & Has('CollectableOrb24')
+                       & Has('CollectableOrb25')
+                       & Has('CollectableOrb26')
+                       & Has('CollectableOrb27')
+                       & Has('CollectableOrb28')
+                       )
 
         goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
         self.set_completion_rule(Has(goal_event))
