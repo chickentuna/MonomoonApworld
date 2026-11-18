@@ -59,9 +59,26 @@ class MonomoonWorld(World):
     def create_item(self, name: str) -> Item:
         return MonomoonItem(name, classification(name), item_name_to_id[name], self.player)
 
+    def add_event(self, region, name, rule):
+        loc = MonomoonLocation(self.player, name, None, region)
+        loc.place_locked_item(MonomoonItem(name, ItemClassification.progression, None, self.player))
+        region.locations.append(loc)
+        self.set_rule(loc, rule)
+
     def set_rules(self) -> None:
 
-        # TODO: use the RuleBuilder
+        # Endings
+        moon_region = self.get_region("TODO")
+        shrine_region = self.get_region("TODO")
+        statue_region = self.get_region("TODO")
+        # NOTE: temporary names for testing out logic
+        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
+        self.add_event(shrine_region, "The End", Has("Moon Fixed") & Has("Sky Key"))
+        self.add_event(statue_region, "Full Moon", Has("True Ending") & Has("Trophy", 8))
+
+        goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
+        self.set_completion_rule(Has(goal_event))
+
         
         # TODO: completion condition
         self.multiworld.completion_condition[self.player] = lambda state: False

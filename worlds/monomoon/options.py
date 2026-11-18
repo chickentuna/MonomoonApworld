@@ -40,3 +40,5 @@ class CheckpointSanity(DefaultOnToggle):
 class MonomoonOptions(PerGameCommonOptions):
     goal: Goal = Goal()
     random_start_location: RandomStartLocation = RandomStartLocation()
+    gate_movement_mechanics: GateMovementMechanics = GateMovementMechanics()
+    checkpoint_sanity: CheckpointSanity = CheckpointSanity()
