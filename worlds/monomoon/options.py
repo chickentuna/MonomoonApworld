@@ -38,7 +38,7 @@ class CheckpointSanity(DefaultOnToggle):
 
 @dataclass
 class MonomoonOptions(PerGameCommonOptions):
-    goal: Goal = Goal()
-    random_start_location: RandomStartLocation = RandomStartLocation()
-    gate_movement_mechanics: GateMovementMechanics = GateMovementMechanics()
-    checkpoint_sanity: CheckpointSanity = CheckpointSanity()
+    goal: Goal
+    random_start_location: RandomStartLocation
+    gate_movement_mechanics: GateMovementMechanics
+    checkpoint_sanity: CheckpointSanity
