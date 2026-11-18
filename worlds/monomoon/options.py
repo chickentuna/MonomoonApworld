@@ -21,6 +21,21 @@ class RandomStartLocation(DefaultOnToggle):
     display_name = "Random Start Location"
 
 
+class GateMovementMechanics(DefaultOnToggle):
+    """TODO: Adds knowledge-gated movement mechanics into the pool. These include:
+        - Sliding (and therefore Rolling/Diving)
+        - Floating
+        - Dizzy
+        - Sleep
+        - Frame lock
+    """
+    display_name = "Gate movement mechanics"
+
+class CheckpointSanity(DefaultOnToggle):
+    """TODO: Each checkpoint is a location.
+    """
+    display_name = "Checkpointsanity"
+
 @dataclass
 class MonomoonOptions(PerGameCommonOptions):
     goal: Goal = Goal()
