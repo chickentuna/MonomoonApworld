@@ -96,6 +96,11 @@ class MonomoonWorld(World):
 
     def set_rules(self) -> None:
 
+        # Locations only reachable with frame lock
+        self.set_rule(self.get_location('Fruit Relic'), Has('Map'))
+        self.set_rule(self.get_location('Mirror Relic'), Has('Map'))
+        self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), Has('Map')) # Eye room
+
         # Endings
         moon_region = self.get_region("Everything")  # TODO: region based logic
         shrine_region = self.get_region("Everything")
