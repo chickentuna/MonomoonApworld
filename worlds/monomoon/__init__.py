@@ -102,16 +102,19 @@ class MonomoonWorld(World):
         self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), Has('Map')) # Eye room
 
         # Endings
+        goal = self.options.goal.value
         moon_region = self.get_region("Everything")  # TODO: region based logic
         shrine_region = self.get_region("Everything")
         statue_region = self.get_region("Everything")
 
         self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
-        self.add_event(shrine_region, "The End", Has("Fix Moon")
+        if goal > 0:
+            self.add_event(shrine_region, "The End", Has("Fix Moon")
                        & Has("Sky Emblem")
                        & Has("Sea Emblem")
                        & Has("Earth Emblem"))
-        self.add_event(statue_region, "Full Moon", Has("The End")
+        if goal > 1:
+            self.add_event(statue_region, "Full Moon", Has("The End")
                        & Has('Skull Relic')
                        & Has('Amulet Relic')
                        & Has('Fruit Relic')
