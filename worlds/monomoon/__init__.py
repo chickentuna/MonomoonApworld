@@ -1,12 +1,13 @@
 from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
-from .constants import GAME_NAME, MOON_PIECE_COUNT, RELIC_COUNT
-from .items import MonomoonItem, item_name_to_id, classification
+from .constants import GAME_NAME, pickups_csv
+from .items import MonomoonItem, classification
 from .locations import MonomoonLocation, location_name_to_id, location
 from .options import MonomoonOptions, GateMovementMechanics
 from rule_builder.rules import Has, HasAll
 from rule_builder.options import OptionFilter
+
 
 class MonomoonWeb(WebWorld):
     tutorials = [Tutorial(
@@ -19,11 +20,11 @@ class MonomoonWeb(WebWorld):
     )]
 
 
-
 def movement(*items: str):
     return HasAll(
         *items,
-        options=[OptionFilter(GateMovementMechanics, GateMovementMechanics.option_true)],
+        options=[OptionFilter(GateMovementMechanics,
+                              GateMovementMechanics.option_true)],
         filtered_resolution=True,
     )
 
@@ -36,12 +37,25 @@ class MonomoonWorld(World):
     web = MonomoonWeb()
     options_dataclass = MonomoonOptions
     options: MonomoonOptions
-    item_name_to_id = item_name_to_id
+    item_name_to_id = {}
     location_name_to_id = location_name_to_id
     origin_region_name = 'Entrance'
 
+    def create_region(self, name) -> Region:
+        region = Region(name, self.player, self.multiworld)
+        self.multiworld.regions.append(region)
+        return region
 
     def create_regions(self) -> None:
+        entrance = self.create_region("Entrance")
+        everything = self.create_region("Everything")
+        for name, loc_id in location_name_to_id.items():
+            everything.locations.append(MonomoonLocation(
+                self.player, name, loc_id, everything))
+        entrance.connect(everything)
+
+        # Beginnings of region based movement logic, not for v1
+        '''
         entrance = Region("Entrance", self.player, self.multiworld)
         self.multiworld.regions.append(entrance)
         entrance.locations.append(MonomoonLocation(self.player, *location("CollectableMap"), entrance))
@@ -57,72 +71,56 @@ class MonomoonWorld(World):
                 continue
             everything.locations.append(MonomoonLocation(self.player, name, loc_id, everything))
         self.multiworld.regions.append(everything)
-
+        
         entrance.connect(everything)
+        '''
 
     def create_items(self) -> None:
-        for name in item_name_to_id:
+        for row in pickups_csv:
+            id, name, _ = row
+            id = int(id)
+            if name not in self.item_name_to_id:
+                # we consider orbs as 1 item, same for moon piece
+                self.item_name_to_id[name] = id
             self.multiworld.itempool.append(self.create_item(name))
-        for _ in range(MOON_PIECE_COUNT):
-            self.multiworld.itempool.append(self.create_item('Moon Piece'))
-        for _ in range(RELIC_COUNT):
-            self.multiworld.itempool.append(self.create_item('Relic'))
-        self.multiworld.itempool.append(self.create_item('Sky Emblem'))
-
 
     def create_item(self, name: str) -> Item:
-        return MonomoonItem(name, classification(name), item_name_to_id[name], self.player)
+        return MonomoonItem(name, classification(name, self.options.goal.value), self.item_name_to_id[name], self.player)
 
     def add_event(self, region, name, rule):
         loc = MonomoonLocation(self.player, name, None, region)
-        loc.place_locked_item(MonomoonItem(name, ItemClassification.progression, None, self.player))
+        loc.place_locked_item(MonomoonItem(
+            name, ItemClassification.progression, None, self.player))
         region.locations.append(loc)
         self.set_rule(loc, rule)
 
     def set_rules(self) -> None:
 
         # Endings
-        moon_region = self.get_region("TODO")
-        shrine_region = self.get_region("TODO")
-        statue_region = self.get_region("TODO")
-        # NOTE: temporary names for testing out logic
+        moon_region = self.get_region("Everything")  # TODO: region based logic
+        shrine_region = self.get_region("Everything")
+        statue_region = self.get_region("Everything")
+
         self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
-        self.add_event(shrine_region, "The End", Has("Fix Moon") & Has("Sky Emblem"))
-        self.add_event(statue_region, "Full Moon", Has("The End") 
-                       & Has("Relic", 8) 
-                       #    & Has("Yellow Orb", 7)
-                       #    & Has("Green Orb", 7)
-                       #    & Has("Red Orb", 7)
-                       #    & Has("Blue Orb", 7)
-                       & Has('CollectableOrb')
-                       & Has('CollectableOrb2')
-                       & Has('CollectableOrb3')
-                       & Has('CollectableOrb4')
-                       & Has('CollectableOrb5')
-                       & Has('CollectableOrb6')
-                       & Has('CollectableOrb7')
-                       & Has('CollectableOrb8')
-                       & Has('CollectableOrb9')
-                       & Has('CollectableOrb10')
-                       & Has('CollectableOrb11')
-                       & Has('CollectableOrb12')
-                       & Has('CollectableOrb13')
-                       & Has('CollectableOrb14')
-                       & Has('CollectableOrb15')
-                       & Has('CollectableOrb16')
-                       & Has('CollectableOrb17')
-                       & Has('CollectableOrb18')
-                       & Has('CollectableOrb19')
-                       & Has('CollectableOrb20')
-                       & Has('CollectableOrb21')
-                       & Has('CollectableOrb22')
-                       & Has('CollectableOrb23')
-                       & Has('CollectableOrb24')
-                       & Has('CollectableOrb25')
-                       & Has('CollectableOrb26')
-                       & Has('CollectableOrb27')
-                       & Has('CollectableOrb28')
+        self.add_event(shrine_region, "The End", Has("Fix Moon")
+                       & Has("Sky Emblem")
+                       & Has("Sea Emblem")
+                       & Has("Earth Emblem"))
+        self.add_event(statue_region, "Full Moon", Has("The End")
+                       & Has('Skull Relic')
+                       & Has('Amulet Relic')
+                       & Has('Fruit Relic')
+                       & Has('Mirror Relic')
+                       & Has('Hourglass Relic')
+                       & Has('Wand Relic')
+                       & Has('Scales Relic')
+                       & Has('Crown Relic')
+                       & Has("Yellow Orb", 7)
+                       & Has("Green Orb", 7)
+                       & Has("Red Orb", 7)
+                       & Has("Blue Orb", 7)
                        )
 
-        goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
+        goal_event = ["Fix Moon", "The End",
+                      "Full Moon"][self.options.goal.value]
         self.set_completion_rule(Has(goal_event))
