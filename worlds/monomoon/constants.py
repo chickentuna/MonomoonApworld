@@ -6,6 +6,8 @@ from typing import List
 class RawCollectible:
     node_name: str
     ap_id: int
+    ap_name: str
+    loc_name: str
 
 GAME_NAME = "MONOMOON"
 

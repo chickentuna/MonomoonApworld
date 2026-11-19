@@ -1,7 +1,7 @@
 from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
-from .constants import GAME_NAME, MOON_PIECE_COUNT, RELIC_COUNT
+from .constants import GAME_NAME, MOON_PIECE_COUNT, ORB_COUNT_PER_COLOUR, RELIC_COUNT
 from .items import MonomoonItem, item_name_to_id, classification
 from .locations import MonomoonLocation, location_name_to_id, location
 from .options import MonomoonOptions, GateMovementMechanics
@@ -67,7 +67,9 @@ class MonomoonWorld(World):
             self.multiworld.itempool.append(self.create_item('Moon Piece'))
         for _ in range(RELIC_COUNT):
             self.multiworld.itempool.append(self.create_item('Relic'))
-        self.multiworld.itempool.append(self.create_item('Sky Emblem'))
+        for _ in range(ORB_COUNT_PER_COLOUR):
+            for col in ['Red', 'Yellow', 'Blue', 'Green']:
+                self.multiworld.itempool.append(self.create_item(f'{col} Orb'))
 
 
     def create_item(self, name: str) -> Item:
@@ -90,38 +92,10 @@ class MonomoonWorld(World):
         self.add_event(shrine_region, "The End", Has("Fix Moon") & Has("Sky Emblem"))
         self.add_event(statue_region, "Full Moon", Has("The End") 
                        & Has("Relic", 8) 
-                       #    & Has("Yellow Orb", 7)
-                       #    & Has("Green Orb", 7)
-                       #    & Has("Red Orb", 7)
-                       #    & Has("Blue Orb", 7)
-                       & Has('CollectableOrb')
-                       & Has('CollectableOrb2')
-                       & Has('CollectableOrb3')
-                       & Has('CollectableOrb4')
-                       & Has('CollectableOrb5')
-                       & Has('CollectableOrb6')
-                       & Has('CollectableOrb7')
-                       & Has('CollectableOrb8')
-                       & Has('CollectableOrb9')
-                       & Has('CollectableOrb10')
-                       & Has('CollectableOrb11')
-                       & Has('CollectableOrb12')
-                       & Has('CollectableOrb13')
-                       & Has('CollectableOrb14')
-                       & Has('CollectableOrb15')
-                       & Has('CollectableOrb16')
-                       & Has('CollectableOrb17')
-                       & Has('CollectableOrb18')
-                       & Has('CollectableOrb19')
-                       & Has('CollectableOrb20')
-                       & Has('CollectableOrb21')
-                       & Has('CollectableOrb22')
-                       & Has('CollectableOrb23')
-                       & Has('CollectableOrb24')
-                       & Has('CollectableOrb25')
-                       & Has('CollectableOrb26')
-                       & Has('CollectableOrb27')
-                       & Has('CollectableOrb28')
+                       & Has("Yellow Orb", 7)
+                       & Has("Green Orb", 7)
+                       & Has("Red Orb", 7)
+                       & Has("Blue Orb", 7)
                        )
 
         goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
