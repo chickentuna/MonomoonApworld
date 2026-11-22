@@ -41,6 +41,9 @@ class MonomoonWorld(World):
     location_name_to_id = location_name_to_id
     origin_region_name = 'Entrance'
 
+    def fill_slot_data(self):
+        return self.options.as_dict("goal")
+
     def create_region(self, name) -> Region:
         region = Region(name, self.player, self.multiworld)
         self.multiworld.regions.append(region)
