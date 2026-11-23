@@ -42,7 +42,13 @@ class MonomoonWorld(World):
     origin_region_name = 'Entrance'
 
     def fill_slot_data(self):
-        return self.options.as_dict("goal")
+        return self.options.as_dict(
+            "goal",
+            "random_start_location",
+            "gate_movement_mechanics",
+            "checkpoint_sanity",
+            "moon_script_only"
+        )
 
     def create_region(self, name) -> Region:
         region = Region(name, self.player, self.multiworld)
@@ -102,10 +108,12 @@ class MonomoonWorld(World):
         # Locations only reachable with frame lock
         self.set_rule(self.get_location('Fruit Relic'), Has('Map'))
         self.set_rule(self.get_location('Mirror Relic'), Has('Map'))
-        self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), Has('Map')) # Eye room
+        self.set_rule(self.get_location(
+            'Sea Cave Golden Quill (13,2)'), Has('Map'))  # Eye room
 
         # Crown Emblem Location
-        self.set_rule(self.get_location('Fix Moon Reward'), Has('Moon Piece', 4))
+        self.set_rule(self.get_location(
+            'Fix Moon Reward'), Has('Moon Piece', 4))
 
         # Endings
         goal = self.options.goal.value
@@ -116,25 +124,25 @@ class MonomoonWorld(World):
         self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
         if goal > 0:
             self.add_event(shrine_region, "The End", Has("Fix Moon")
-                       & Has("Sky Emblem")
-                       & Has("Sea Emblem")
-                       & Has("Earth Emblem")
-                       & Has("Crown Emblem"))
+                           & Has("Sky Emblem")
+                           & Has("Sea Emblem")
+                           & Has("Earth Emblem")
+                           & Has("Crown Emblem"))
         if goal > 1:
             self.add_event(statue_region, "Full Moon", Has("The End")
-                       & Has('Skull Relic')
-                       & Has('Amulet Relic')
-                       & Has('Fruit Relic')
-                       & Has('Mirror Relic')
-                       & Has('Hourglass Relic')
-                       & Has('Wand Relic')
-                       & Has('Scales Relic')
-                       & Has('Crown Relic')
-                       & Has("Yellow Orb", 7)
-                       & Has("Green Orb", 7)
-                       & Has("Red Orb", 7)
-                       & Has("Blue Orb", 7)
-                       )
+                           & Has('Skull Relic')
+                           & Has('Amulet Relic')
+                           & Has('Fruit Relic')
+                           & Has('Mirror Relic')
+                           & Has('Hourglass Relic')
+                           & Has('Wand Relic')
+                           & Has('Scales Relic')
+                           & Has('Crown Relic')
+                           & Has("Yellow Orb", 7)
+                           & Has("Green Orb", 7)
+                           & Has("Red Orb", 7)
+                           & Has("Blue Orb", 7)
+                           )
 
         goal_event = ["Fix Moon", "The End",
                       "Full Moon"][self.options.goal.value]

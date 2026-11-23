@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, DefaultOnToggle, Choice
+from Options import PerGameCommonOptions, DefaultOnToggle, Choice, Toggle
 
 class Goal(Choice):
     """
@@ -30,10 +30,15 @@ class GateMovementMechanics(DefaultOnToggle):
     """
     display_name = "Gate movement mechanics"
 
-class CheckpointSanity(DefaultOnToggle):
+class CheckpointSanity(Toggle):
     """TODO: Each checkpoint is a location.
     """
     display_name = "Checkpointsanity"
+
+class MoonScriptOnly(Toggle):
+    """Archipelago popups are all written in the game's alphabet. Expect broken characters.
+    """
+    display_name = "Moon script only"
 
 @dataclass
 class MonomoonOptions(PerGameCommonOptions):
@@ -41,3 +46,4 @@ class MonomoonOptions(PerGameCommonOptions):
     random_start_location: RandomStartLocation
     gate_movement_mechanics: GateMovementMechanics
     checkpoint_sanity: CheckpointSanity
+    moon_script_only: MoonScriptOnly
