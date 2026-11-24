@@ -15,5 +15,4 @@ for row in pickups_csv:
 class MonomoonLocation(Location):
     game = GAME_NAME
 
-def location(name: str) -> Tuple[str, int]:
-    return (name, location_name_to_id[name])
+

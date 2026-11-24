@@ -3,7 +3,7 @@ from worlds.AutoWorld import WebWorld, World
 
 from .constants import GAME_NAME, pickups_csv
 from .items import MonomoonItem, classification
-from .locations import MonomoonLocation, location_name_to_id, location
+from .locations import MonomoonLocation, location_name_to_id
 from .options import MonomoonOptions, GateMovementMechanics
 from rule_builder.rules import Has, HasAll
 from rule_builder.options import OptionFilter
@@ -63,27 +63,6 @@ class MonomoonWorld(World):
                 self.player, name, loc_id, everything))
         entrance.connect(everything)
 
-        # Beginnings of region based movement logic, not for v1
-        '''
-        entrance = Region("Entrance", self.player, self.multiworld)
-        self.multiworld.regions.append(entrance)
-        entrance.locations.append(MonomoonLocation(self.player, *location("CollectableMap"), entrance))
-
-        west_of_entrace = Region("WestOfEntrance", self.player, self.multiworld)
-        self.multiworld.regions.append(west_of_entrace)
-        self.create_entrance(entrance, west_of_entrace, movement("Float", "Slide"))
-
-        everything = Region("TODO", self.player, self.multiworld)
-        for name, loc_id in location_name_to_id.items():
-            if name == 'CollectableMap':
-                # used in test above so can't go in todo bin
-                continue
-            everything.locations.append(MonomoonLocation(self.player, name, loc_id, everything))
-        self.multiworld.regions.append(everything)
-        
-        entrance.connect(everything)
-        '''
-
     def create_items(self) -> None:
         for row in pickups_csv:
             id, name, _ = row
@@ -104,20 +83,38 @@ class MonomoonWorld(World):
         self.set_rule(loc, rule)
 
     def set_rules(self) -> None:
-        # Locations only reachable with frame lock
+
         self.set_rule(self.get_location('Fruit Relic'), Has('Map'))
-        self.set_rule(self.get_location('Mirror Relic'), Has('Map'))
-        self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), # Eye room
-                      Has('Map'))
-
-        # Locations only reachable with lyre
-        self.set_rule(self.get_location('Sea Dragon', Has('Lyre')))
-        self.set_rule(self.get_location('Coast Red Orb (5,5)', Has('Lyre')))
-
+        self.set_rule(self.get_location('Mirror Relic'), HasAll('Map', 'Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Sea Dragon'), Has('Lyre'))
+        self.set_rule(self.get_location('Castle Golden Quill'), HasAll('Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Swamp Quill (3,9)'), Has('Lyre'))
+        self.set_rule(self.get_location('Swamp Blue Orb (4,11)'), HasAll('Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Sea Cave Red Orb (7,3)'), Has('Lyre'))
+        
+        # Eye room
+        self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), HasAll('Lyre', 'Map', 'Map Markers'))
 
         # Crown Emblem Location
-        self.set_rule(self.get_location('Fix Moon Reward'),
-                      Has('Moon Piece', 4))
+        self.set_rule(self.get_location('Fix Moon Reward'), Has('Moon Piece', 4))
+
+        # Beyond City Entrance
+        self.set_rule(self.get_location('City Quill (27,9)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Cavern Green Orb (28,12)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Rabbit Telescope'), Has('Map Markers'))
+        self.set_rule(self.get_location('Hourglass Relic'), Has('Map Markers'))
+        self.set_rule(self.get_location('City Red Orb (28,5)'), Has('Map Markers'))
+        self.set_rule(self.get_location('City Quill (27,3)'), Has('Map Markers'))
+        self.set_rule(self.get_location('City Red Orb (24,6)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Catacombs Green Orb (23,7)'), Has('Map Markers'))
+        self.set_rule(self.get_location('City Quill (23,6)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Scales Relic'), Has('Map Markers'))
+        self.set_rule(self.get_location('Conch'), Has('Map Markers'))
+        self.set_rule(self.get_location('Abyss Red Orb (17,2)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Abyss Golden Quill (14,2)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Catacombs Quill (25,8)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Den Green Orb (23,13)'), Has('Map Markers'))
+        self.set_rule(self.get_location('Skull Relic'), Has('Map Markers'))
 
         # Endings
         goal = self.options.goal.value
@@ -125,14 +122,18 @@ class MonomoonWorld(World):
         shrine_region = self.get_region("Everything")
         statue_region = self.get_region("Everything")
 
-        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4))
+        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4)) #TODO: allow fixing moon with four moon pieces
         if goal > 0:
-            self.add_event(shrine_region, "The End", Has("Fix Moon")
-                           & Has("Sky Emblem")
-                           & Has("Sea Emblem")
-                           & Has("Earth Emblem")
-                           & Has("Crown Emblem")
-                           & Has('Lyre'))
+            self.add_event(shrine_region, "The End", HasAll(
+                    "Fix Moon",
+                    "Sky Emblem",
+                    "Sea Emblem",
+                    "Earth Emblem",
+                    "Crown Emblem",
+                    "Lyre",
+                    "Map Markers"
+                )
+            )
         if goal > 1:
             self.add_event(statue_region, "Full Moon", Has("The End")
                            & Has('Skull Relic')
@@ -147,8 +148,9 @@ class MonomoonWorld(World):
                            & Has("Green Orb", 7)
                            & Has("Red Orb", 7)
                            & Has("Blue Orb", 7)
+                           & Has("Map")
+                           & Has("Map Markers")
                            )
 
-        goal_event = ["Fix Moon", "The End",
-                      "Full Moon"][self.options.goal.value]
+        goal_event = ["Fix Moon", "The End", "Full Moon"][self.options.goal.value]
         self.set_completion_rule(Has(goal_event))

@@ -22,12 +22,9 @@ def classification(name: str, goal_value:int) -> ItemClassification:
     for col in ORB_COLOURS:
         if name.startswith(f'{col} Orb'):
             return for_full_moon
-    if name in ['Lyre', 'Map']:
+    if name in ['Lyre', 'Map', 'Map Markers']:
         return ItemClassification.progression | ItemClassification.useful
     if name in ['Conch']:
         return ItemClassification.useful
-    if name == 'Map Markers':
-        return ItemClassification.progression
 
-    
     return ItemClassification.filler
