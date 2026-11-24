@@ -130,7 +130,8 @@ class MonomoonWorld(World):
                            & Has("Sky Emblem")
                            & Has("Sea Emblem")
                            & Has("Earth Emblem")
-                           & Has("Crown Emblem"))
+                           & Has("Crown Emblem")
+                           & Has('Lyre'))
         if goal > 1:
             self.add_event(statue_region, "Full Moon", Has("The End")
                            & Has('Skull Relic')
