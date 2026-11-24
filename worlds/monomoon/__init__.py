@@ -108,12 +108,15 @@ class MonomoonWorld(World):
         # Locations only reachable with frame lock
         self.set_rule(self.get_location('Fruit Relic'), Has('Map'))
         self.set_rule(self.get_location('Mirror Relic'), Has('Map'))
-        self.set_rule(self.get_location(
-            'Sea Cave Golden Quill (13,2)'), Has('Map'))  # Eye room
+        self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), # Eye room
+                      Has('Map'))
+
+        # Sea Dragon
+        self.set_rule(self.get_location('Sea Dragon', Has('Lyre')))
 
         # Crown Emblem Location
-        self.set_rule(self.get_location(
-            'Fix Moon Reward'), Has('Moon Piece', 4))
+        self.set_rule(self.get_location('Fix Moon Reward'),
+                      Has('Moon Piece', 4))
 
         # Endings
         goal = self.options.goal.value
