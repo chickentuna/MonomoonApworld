@@ -3,6 +3,7 @@ from typing import Dict
 from BaseClasses import Item, ItemClassification
 from .constants import GAME_NAME, ORB_COLOURS
 
+FILLER_NAME = "Nothing"
 
 class MonomoonItem(Item):
     game = GAME_NAME

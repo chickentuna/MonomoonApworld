@@ -2,7 +2,7 @@ from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
 from .constants import GAME_NAME, pickups_csv
-from .items import MonomoonItem, classification
+from .items import MonomoonItem, classification, FILLER_NAME
 from .locations import MonomoonLocation, location_name_to_id
 from .options import MonomoonOptions, GateMovementMechanics
 from rule_builder.rules import Has, HasAll
@@ -44,10 +44,11 @@ class MonomoonWorld(World):
     def fill_slot_data(self):
         return self.options.as_dict(
             "goal",
-            "random_start_location",
-            "gate_movement_mechanics",
-            "checkpoint_sanity",
-            "moon_script_only"
+            # "random_start_location",
+            # "gate_movement_mechanics",
+            # "checkpoint_sanity",
+            "moon_script_only",
+            "start_with_map"
         )
 
     def create_region(self, name) -> Region:
@@ -64,13 +65,26 @@ class MonomoonWorld(World):
         entrance.connect(everything)
 
     def create_items(self) -> None:
+        self.item_name_to_id[FILLER_NAME] = 0
         for row in pickups_csv:
             id, name, _ = row
             id = int(id)
             if name not in self.item_name_to_id:
                 # we consider orbs as 1 item, same for moon piece
                 self.item_name_to_id[name] = id
-            self.multiworld.itempool.append(self.create_item(name))
+            
+            if name == "Map" and self.options.start_with_map.value:
+                self.multiworld.push_precollected(self.create_item(name))
+            else:
+                self.multiworld.itempool.append(self.create_item(name))
+
+
+        my_item_count = len([_ for item in self.multiworld.itempool if item.player == self.player])
+        my_location_count = len(self.multiworld.get_unfilled_locations(self.player))
+        self.multiworld.itempool += [self.create_filler() for _ in range(my_location_count - my_item_count)]
+
+    def get_filler_item_name(self) -> str:
+        return "Nothing"
 
     def create_item(self, name: str) -> Item:
         return MonomoonItem(name, classification(name, self.options.goal.value), self.item_name_to_id[name], self.player)
