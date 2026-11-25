@@ -95,9 +95,6 @@ class MonomoonWorld(World):
         # Eye room
         self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), HasAll('Lyre', 'Map', 'Map Markers'))
 
-        # Crown Emblem Location
-        self.set_rule(self.get_location('Fix Moon Reward'), Has('Moon Piece', 4))
-
         # Beyond City Entrance
         self.set_rule(self.get_location('City Quill (27,9)'), Has('Map Markers'))
         self.set_rule(self.get_location('Cavern Green Orb (28,12)'), Has('Map Markers'))
@@ -116,13 +113,18 @@ class MonomoonWorld(World):
         self.set_rule(self.get_location('Den Green Orb (23,13)'), Has('Map Markers'))
         self.set_rule(self.get_location('Skull Relic'), Has('Map Markers'))
 
+        # Beyond roof (need lyre for cube or map markers for torches)
+        self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), Has('Map Markers') | Has('Lyre'))
+
         # Endings
         goal = self.options.goal.value
         moon_region = self.get_region("Everything")  # TODO: region based logic
         shrine_region = self.get_region("Everything")
         statue_region = self.get_region("Everything")
 
-        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4)) #TODO: allow fixing moon with four moon pieces
+        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4) & (Has('Map Markers') | Has('Lyre'))) #TODO: allow fixing moon with four moon pieces
+        # Crown Emblem
+        self.set_rule(self.get_location('Fix Moon Reward'), Has('Fix Moon'))
         if goal > 0:
             self.add_event(shrine_region, "The End", HasAll(
                     "Fix Moon",
