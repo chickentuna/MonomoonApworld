@@ -1,9 +1,19 @@
 from typing import Dict
 
 from BaseClasses import Item, ItemClassification
-from .constants import GAME_NAME, ORB_COLOURS
+from .constants import GAME_NAME, ORB_COLOURS, pickups_csv
 
 FILLER_NAME = "Nothing"
+
+item_name_to_id: Dict[str, int] = {
+    FILLER_NAME: 0
+}
+for row in pickups_csv:
+    id, name, _ = row
+    id = int(id)
+    if name not in item_name_to_id:
+        # we consider orbs as 1 item, same for moon piece, so we keep the first id in the list
+        item_name_to_id[name] = id
 
 class MonomoonItem(Item):
     game = GAME_NAME

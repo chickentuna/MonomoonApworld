@@ -2,7 +2,7 @@ from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
 from .constants import GAME_NAME, pickups_csv
-from .items import MonomoonItem, classification, FILLER_NAME
+from .items import MonomoonItem, classification, item_name_to_id
 from .locations import MonomoonLocation, location_name_to_id
 from .options import MonomoonOptions, GateMovementMechanics
 from rule_builder.rules import Has, HasAll
@@ -37,7 +37,7 @@ class MonomoonWorld(World):
     web = MonomoonWeb()
     options_dataclass = MonomoonOptions
     options: MonomoonOptions
-    item_name_to_id = {}
+    item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
     origin_region_name = 'Entrance'
 
@@ -65,19 +65,12 @@ class MonomoonWorld(World):
         entrance.connect(everything)
 
     def create_items(self) -> None:
-        self.item_name_to_id[FILLER_NAME] = 0
         for row in pickups_csv:
-            id, name, _ = row
-            id = int(id)
-            if name not in self.item_name_to_id:
-                # we consider orbs as 1 item, same for moon piece
-                self.item_name_to_id[name] = id
-            
+            _, name, _ = row
             if name == "Map" and self.options.start_with_map.value:
                 self.multiworld.push_precollected(self.create_item(name))
             else:
                 self.multiworld.itempool.append(self.create_item(name))
-
 
         my_item_count = len([_ for item in self.multiworld.itempool if item.player == self.player])
         my_location_count = len(self.multiworld.get_unfilled_locations(self.player))
@@ -151,7 +144,11 @@ class MonomoonWorld(World):
                     "Crown Emblem",
                     "Lyre",
                     "Map Markers",
-                    "Map"
+                    "Map",
+                    "Page: Chest Two-Button Door",
+                    "Page: Chest Repel Stone",
+                    "Page: Chest Diamonds Wall",
+                    "Page: Chest Ritual Bed",
                 )
             )
         if goal > 1:
