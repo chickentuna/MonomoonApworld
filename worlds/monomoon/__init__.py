@@ -80,7 +80,7 @@ class MonomoonWorld(World):
         return "Nothing"
 
     def create_item(self, name: str) -> Item:
-        return MonomoonItem(name, classification(name, self.options.goal.value), self.item_name_to_id[name], self.player)
+        return MonomoonItem(name, classification(name, self.options.goal.value), item_name_to_id[name], self.player)
 
     def add_event(self, region, name, rule):
         loc = MonomoonLocation(self.player, name, None, region)
