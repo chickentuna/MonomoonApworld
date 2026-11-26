@@ -117,6 +117,7 @@ class MonomoonWorld(World):
         self.set_rule(self.get_location('Abyss Golden Quill (14,2)'), HasAll('Map Markers', 'Map'))
         self.set_rule(self.get_location('Catacombs Quill (25,8)'), HasAll('Map Markers', 'Map'))
         self.set_rule(self.get_location('Den Green Orb (23,13)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Skull Relic'), HasAll('Map Markers', 'Map')) # needs torch
 
         # Beyond roof (need lyre for cube or map markers for torches)
         self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), HasAll('Map Markers', 'Map') | Has('Lyre'))
