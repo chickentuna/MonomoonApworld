@@ -99,36 +99,35 @@ class MonomoonWorld(World):
     def set_rules(self) -> None:
 
         self.set_rule(self.get_location('Fruit Relic'), Has('Map'))
-        self.set_rule(self.get_location('Mirror Relic'), HasAll('Map', 'Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Mirror Relic'), HasAll('Map', 'Lyre', 'Map Markers', 'Map'))
         self.set_rule(self.get_location('Sea Dragon'), Has('Lyre'))
-        self.set_rule(self.get_location('Castle Golden Quill'), HasAll('Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Castle Golden Quill'), HasAll('Lyre', 'Map Markers', 'Map'))
         self.set_rule(self.get_location('Swamp Quill (3,9)'), Has('Lyre'))
-        self.set_rule(self.get_location('Swamp Blue Orb (4,11)'), HasAll('Lyre', 'Map Markers'))
+        self.set_rule(self.get_location('Swamp Blue Orb (4,11)'), HasAll('Lyre', 'Map Markers', 'Map'))
         self.set_rule(self.get_location('Sea Cave Red Orb (7,3)'), Has('Lyre'))
         
         # Eye room
         self.set_rule(self.get_location('Sea Cave Golden Quill (13,2)'), HasAll('Lyre', 'Map', 'Map Markers'))
 
         # Beyond City Entrance
-        self.set_rule(self.get_location('City Quill (27,9)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Cavern Green Orb (28,12)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Rabbit Telescope'), Has('Map Markers'))
-        self.set_rule(self.get_location('Hourglass Relic'), Has('Map Markers'))
-        self.set_rule(self.get_location('City Red Orb (28,5)'), Has('Map Markers'))
-        self.set_rule(self.get_location('City Quill (27,3)'), Has('Map Markers'))
-        self.set_rule(self.get_location('City Red Orb (24,6)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Catacombs Green Orb (23,7)'), Has('Map Markers'))
-        self.set_rule(self.get_location('City Quill (23,6)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Scales Relic'), Has('Map Markers'))
-        self.set_rule(self.get_location('Conch'), Has('Map Markers'))
-        self.set_rule(self.get_location('Abyss Red Orb (17,2)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Abyss Golden Quill (14,2)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Catacombs Quill (25,8)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Den Green Orb (23,13)'), Has('Map Markers'))
-        self.set_rule(self.get_location('Skull Relic'), Has('Map Markers'))
+        self.set_rule(self.get_location('City Quill (27,9)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Cavern Green Orb (28,12)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Rabbit Telescope'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Hourglass Relic'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('City Red Orb (28,5)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('City Quill (27,3)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('City Red Orb (24,6)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Catacombs Green Orb (23,7)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('City Quill (23,6)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Conch'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Abyss Red Orb (17,2)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Abyss Golden Quill (14,2)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Catacombs Quill (25,8)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Den Green Orb (23,13)'), HasAll('Map Markers', 'Map'))
+        self.set_rule(self.get_location('Skull Relic'), HasAll('Map Markers', 'Map'))
 
         # Beyond roof (need lyre for cube or map markers for torches)
-        self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), Has('Map Markers') | Has('Lyre'))
+        self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), HasAll('Map Markers', 'Map') | Has('Lyre'))
 
         # Endings
         goal = self.options.goal.value
@@ -136,9 +135,13 @@ class MonomoonWorld(World):
         shrine_region = self.get_region("Everything")
         statue_region = self.get_region("Everything")
 
-        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4) & (Has('Map Markers') | Has('Lyre'))) #TODO: allow fixing moon with four moon pieces
+        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4) & (HasAll('Map Markers', 'Map') | Has('Lyre')))
+        
+        # Scales Relic
+        self.set_rule(self.get_location('Scales Relic'), HasAll('Map Markers', 'Map', 'Fix Moon'))
         # Crown Emblem
         self.set_rule(self.get_location('Fix Moon Reward'), Has('Fix Moon'))
+
         if goal > 0:
             self.add_event(shrine_region, "The End", HasAll(
                     "Fix Moon",
@@ -147,7 +150,8 @@ class MonomoonWorld(World):
                     "Earth Emblem",
                     "Crown Emblem",
                     "Lyre",
-                    "Map Markers"
+                    "Map Markers",
+                    "Map"
                 )
             )
         if goal > 1:
