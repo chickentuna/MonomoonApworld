@@ -53,6 +53,6 @@ class MonomoonOptions(PerGameCommonOptions):
     goal: Goal
     moon_script_only: MoonScriptOnly
     start_with_map: StartWithMap
-    random_start_location: RandomStartLocation
-    gate_movement_mechanics: GateMovementMechanics
-    checkpoint_sanity: CheckpointSanity
+    # random_start_location: RandomStartLocation
+    # gate_movement_mechanics: GateMovementMechanics
+    # checkpoint_sanity: CheckpointSanity
