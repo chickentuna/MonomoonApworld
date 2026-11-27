@@ -119,6 +119,9 @@ class MonomoonWorld(World):
         self.set_rule(self.get_location('Den Green Orb (23,13)'), HasAll('Map Markers', 'Map'))
         self.set_rule(self.get_location('Skull Relic'), HasAll('Map Markers', 'Map')) # needs torch
 
+        # Not really necessary but can help
+        self.set_rule(self.get_location('Castle Quill East'), Has('Page: Castle Power Mechanism'))
+
         # Beyond roof (need lyre for cube or map markers for torches)
         self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), HasAll('Map Markers', 'Map') | Has('Lyre'))
 
@@ -128,7 +131,7 @@ class MonomoonWorld(World):
         shrine_region = self.get_region("Everything")
         statue_region = self.get_region("Everything")
 
-        self.add_event(moon_region, "Fix Moon", Has("Moon Piece", 4) & (HasAll('Map Markers', 'Map') | Has('Lyre')))
+        self.add_event(moon_region, "Fix Moon", Has("Moon Fragment", 4) & (HasAll('Map Markers', 'Map') | Has('Lyre')))
         
         # Scales Relic
         self.set_rule(self.get_location('Scales Relic'), HasAll('Map Markers', 'Map', 'Fix Moon'))

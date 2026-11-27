@@ -4,7 +4,7 @@ from Options import PerGameCommonOptions, DefaultOnToggle, Choice, Toggle, Visib
 
 class Goal(Choice):
     """
-    - **Fix Moon:** Collect the four moon piece items and fix the moon.
+    - **Fix Moon:** Collect the four moon fragment items and fix the moon.
     - **The End**: Collect all emblems and complete the crown constellation.
     - **Full Moon:** Collect all relics and dragon egg orbs and birth the dragon.
     """
