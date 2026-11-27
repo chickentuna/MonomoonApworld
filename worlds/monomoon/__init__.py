@@ -2,7 +2,7 @@ from BaseClasses import Item, ItemClassification, Region, Tutorial
 from worlds.AutoWorld import WebWorld, World
 
 from .constants import GAME_NAME, pickups_csv
-from .items import MonomoonItem, classification, item_name_to_id
+from .items import MonomoonItem, classification, item_name_to_id, item_name_groups
 from .locations import MonomoonLocation, location_name_to_id
 from .options import MonomoonOptions, GateMovementMechanics
 from rule_builder.rules import Has, HasAll
@@ -40,6 +40,7 @@ class MonomoonWorld(World):
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
     origin_region_name = 'Entrance'
+    item_name_groups = item_name_groups
 
     def fill_slot_data(self):
         return self.options.as_dict(

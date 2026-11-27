@@ -22,7 +22,8 @@ def classification(name: str, goal_value:int) -> ItemClassification:
     for_the_end = ItemClassification.progression if goal_value > 0 else ItemClassification.filler
     for_full_moon = ItemClassification.progression if goal_value > 1 else ItemClassification.filler
 
-    if name.startswith('Moon Fragment'):
+    
+    if name in ['Page: Castle Power Mechanism', 'Moon Fragment']:
         return ItemClassification.progression
     if 'Page: Chest' in name:
         return for_the_end
@@ -39,3 +40,10 @@ def classification(name: str, goal_value:int) -> ItemClassification:
         return ItemClassification.useful
 
     return ItemClassification.filler
+
+item_name_groups = {
+    "Orbs": ["Yellow Orb", "Red Orb", 'Blue Orb', 'Green Orb'],
+    "Pages": [name for name in item_name_to_id if name.startswith('Page: ')],
+    "Relics": [name for name in item_name_to_id if not name.startswith('Page: ') and name.endswith('Relic')],
+    "Emblems": [name for name in item_name_to_id if not name.startswith('Page: ') and name.endswith('Emblem')]
+}
