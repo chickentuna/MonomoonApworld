@@ -126,6 +126,15 @@ class MonomoonWorld(World):
         # Beyond roof (need lyre for cube or map markers for torches)
         self.set_rule(self.get_location('Glade Yellow Orb (16,17)'), HasAll('Map Markers', 'Map') | Has('Lyre'))
 
+        # Sky Ruins
+        self.set_rule(self.get_location('Sky Ruins Quill (19,16)'), HasAll(
+                "Sky Emblem",
+                "Sea Emblem",
+                "Earth Emblem",
+                "Crown Emblem"
+            )
+        )
+
         # Endings
         goal = self.options.goal.value
         moon_region = self.get_region("Everything")  # TODO: region based logic
